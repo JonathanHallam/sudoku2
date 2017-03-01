@@ -2,7 +2,7 @@ require './lib/cell.rb'
 
 class Board
 
-  attr_accessor :board
+  attr_accessor :board, :rows
   def initialize
 
     @board =  Array.new(9) do |rows|
@@ -10,6 +10,7 @@ class Board
                   Cell.new(cells, rows)
                 end
               end
+    @rows = @board.each { |rows| rows}
   end
 
   def show_board

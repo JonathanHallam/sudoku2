@@ -20,5 +20,47 @@ class Game
     end
   end
 
+  def remove_possibilities
+    game_world.rows.flatten.each do |cells|
+      if cells.set == true
+        cells.possibilities = [cells.num]
+      end
+    end
+  end
 
+  def remove_row_possibilities
+    game_world.board.each do |rows|
+      set_cells = []
+      rows.each do |cell|
+        if cell.set == true
+          set_cells << cell.num
+        end
+      end
+      rows.each do |cell|
+        if cell.set == false
+          cell.possibilities = cell.possibilities - set_cells
+        end
+      end
+    end
+  end
+
+  def remove_column_possibilities
+    game_world.board.transpose.each do |columns|
+      set_cells = []
+      columns.each do |cell|
+        if cell.set == true
+          set_cells << cell.num
+        end
+      end
+      columns.each do |cell|
+        if cell.set == false
+          cell.possibilities = cell.possibilities - set_cells
+        end
+      end
+    end
+  end
+
+  def remove_block_possibilities
+
+  end
 end
