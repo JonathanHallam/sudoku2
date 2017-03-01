@@ -10,11 +10,13 @@ describe Board do
 
   it "should respond to proper methods" do
     expect(snow.respond_to?(:board)).to eql(true)
+    expect(snow.respond_to?(:rows)).to eql(true)
   end
 
   it "should initialize properly" do
     expect(snow.board.is_a?(Array)).to eql(true)
     expect(snow.board.flatten.length).to eql(81)
+    expect(snow.rows.is_a?(Array)).to eql(true)
   end
 
   it "should populate the grid properly on ititialization" do
