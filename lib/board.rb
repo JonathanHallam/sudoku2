@@ -5,11 +5,29 @@ class Board
   attr_accessor :board
   def initialize
 
-    @board = Array.new(9) do |rows|
-      Array.new(9) do |cells|
-        Cell.new(cells, rows)
+    @board =  Array.new(9) do |rows|
+                Array.new(9) do |cells|
+                  Cell.new(cells, rows)
+                end
+              end
+  end
+
+  def show_board
+    puts
+    visible = []
+    @board.each do |row|
+      row.each do |cell|
+        if cell.set == true
+          visible << cell.num
+        else
+          visible << 0
+        end
       end
     end
+    visible.each_slice(9).to_a.each do |row|
+      puts row.each { |cell| cell }.join(" ")
+    end
   end
+
 
 end

@@ -1,13 +1,14 @@
 class Cell
 
-  attr_accessor :col, :row, :set, :possibilities, :block
+  attr_accessor :col, :row, :set, :possibilities, :block, :num
   def initialize(row, col)
     @col = col
     @row = row
     @block = self.set_block
 
+    @num = num
     @set = false
-    @possibilities = []
+    @possibilities = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   end
 
   def set_block
@@ -31,5 +32,6 @@ class Cell
       @block = 9
     end
   end
+
 
 end
