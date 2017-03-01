@@ -14,6 +14,8 @@ describe Cell do
     expect(splinter.respond_to?(:block)).to eql(true)
     expect(splinter.respond_to?(:set)).to eql(true)
     expect(splinter.respond_to?(:possibilities)).to eql(true)
+    expect(splinter.respond_to?(:num)).to eql(true)
+
   end
 
   it "should initialize properly" do
