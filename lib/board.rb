@@ -15,6 +15,7 @@ class Board
 
   def show_board
     puts
+    puts "--+---+---+---+---+---+---+---+---"
     visible = []
     @board.each do |row|
       row.each do |cell|
@@ -26,7 +27,8 @@ class Board
       end
     end
     visible.each_slice(9).to_a.each do |row|
-      puts row.each { |cell| cell }.join(" ")
+      puts row.each { |cell| cell }.join(" | ")
+      puts "--+---+---+---+---+---+---+---+---"
     end
   end
 
