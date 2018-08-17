@@ -33,5 +33,9 @@ class Cell
     end
   end
 
-
+  def set_possibility(value)
+    @possibilities = [value]
+    @set = true
+    @num = @possibilities[0]
+  end
 end

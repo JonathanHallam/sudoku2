@@ -1,4 +1,5 @@
-require 'board'
+require './lib/board'
+require 'pry'
 
 class Game
 
@@ -21,29 +22,16 @@ class Game
     end
   end
 
-  def remove_row_possibilities(board=game_world.board)
-    board.each do |rows|
-      set_cells = []
-      rows.each do |cell|
-        if cell.set == true
-          set_cells << cell.num
-        end
-      end
-      rows.each do |cell|
-        if cell.set == false
-          cell.possibilities = cell.possibilities - set_cells
-        end
-      end
+  def remove_possibilities(set)
+    definate_values = set.select { |cell| cell.num != nil }.map { |cell| cell.num }
+    set.each { |cell| cell.possibilities -= definate_values unless cell.set }
+  end
+
+  def remove_all_possibilities
+    orientations = [@game_world.rows, @game_world.columns, @game_world.blocks]
+    orientations.each do |orientation|
+      orientation.each { |slice| remove_possibilities(slice) }
     end
-  end
-
-  def remove_column_possibilities
-    remove_row_possibilities(game_world.board.transpose)
-  end
-
-  def remove_block_possibilities
-    blocks = game_world.board.map{ |row| row.flatten.each_slice(3).to_a}.transpose.flatten.each_slice(9).to_a
-    remove_row_possibilities(blocks)
   end
 
   def check_unique_cell_values
@@ -52,76 +40,38 @@ class Game
         if cell.possibilities.length == 1
           cell.set = true
           cell.num = cell.possibilities[0]
-          remove_row_possibilities
-          remove_column_possibilities
-          remove_column_possibilities
+          remove_all_possibilities
         end
       end
     end
     game_world.show_board
   end
 
-  def check_unique_and_update_row_possibilities(board=game_world.board)
-    board.each do |rows|
-      possibilities_of_unset_cells = []
-      rows.each do |cell|
-        if cell.set == false
-          possibilities_of_unset_cells << cell.possibilities
+  def check_unique_and_update_possibilities(set)
+    possibilities = set.select { |cell| !cell.set }.map {|cell| cell.possibilities}.flatten
+    count_hash = possibilities.inject(Hash.new(0)) { |poss, count| poss[count] += 1; poss}  
+    count_hash.delete_if { |poss, count| count != 1}.keys.each do |poss|
+      set.each do |cell|
+        if cell.possibilities.include?(poss)
+          cell.set_possibility(poss)
+          remove_all_possibilities
         end
       end
-      possibilities_of_unset_cells.flatten!
-      count_hash = possibilities_of_unset_cells.inject(Hash.new(0)) { |poss, count| poss[count] += 1; poss}
-      count_hash.delete_if { |poss, count| count != 1}.each do |poss, count|
-        rows.each do |cell|
-          if cell.possibilities.include?(poss)
-            cell.possibilities = [poss]
-            cell.set = true
-            cell.num = cell.possibilities[0]
-            remove_row_possibilities
-            remove_column_possibilities
-            remove_column_possibilities
-          end
-        end
-      end
-      game_world.show_board
     end
-
+    check_unique_cell_values
   end
 
-  def check_unique_and_update_column_possibilities
-    check_unique_and_update_row_possibilities(game_world.board.transpose)
-  end
-
-  def check_unique_and_update_block_possibilities
-    blocks = game_world.board.map{ |row| row.flatten.each_slice(3).to_a}.transpose.flatten.each_slice(9).to_a
-    check_unique_and_update_row_possibilities(blocks)
+  def check_unique_and_update_all_possibilities
+    orientations = [@game_world.rows, @game_world.columns, @game_world.blocks]
+    orientations.each do |orientation|
+      orientation.each { |slice| check_unique_and_update_possibilities(slice) }
+    end
   end
 
   def solve_that
     if game_world.show_board.flatten.include?(0)
-      remove_row_possibilities
-      remove_column_possibilities
-      remove_block_possibilities
-      check_unique_cell_values
-      remove_row_possibilities
-      remove_column_possibilities
-      remove_block_possibilities
-      check_unique_cell_values
-      remove_row_possibilities
-      remove_column_possibilities
-      remove_block_possibilities
-      check_unique_and_update_row_possibilities
-      remove_row_possibilities
-      remove_column_possibilities
-      remove_block_possibilities
-      check_unique_and_update_column_possibilities
-      remove_row_possibilities
-      remove_column_possibilities
-      remove_block_possibilities
-      check_unique_and_update_block_possibilities
+      check_unique_and_update_all_possibilities
       solve_that
     end
   end
-
-
 end
