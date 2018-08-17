@@ -2,15 +2,16 @@ require './lib/cell.rb'
 
 class Board
 
-  attr_accessor :board, :rows
+  attr_accessor :board, :rows, :columns, :blocks
   def initialize
-
     @board =  Array.new(9) do |rows|
                 Array.new(9) do |cells|
                   Cell.new(cells, rows)
                 end
               end
-    @rows = @board.each { |rows| rows}
+    @rows = @board
+    @columns = @board.transpose
+    @blocks = @board.map{ |row| row.flatten.each_slice(3).to_a}.transpose.flatten.each_slice(9).to_a
   end
 
   def show_board
@@ -31,6 +32,4 @@ class Board
       puts "--+---+---+---+---+---+---+---+---"
     end
   end
-
-
 end
